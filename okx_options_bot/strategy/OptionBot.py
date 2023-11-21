@@ -86,7 +86,7 @@ class CommandQueue(Queue):
 cmd_queue = CommandQueue()
 
 class OptionBot(BaseStrategy):
-    def __init__(self, ak, sk, pas):
+    def __init__(self, ak, sk, pas, tg_token):
         super().__init__(api_key=ak, api_key_secret=sk, api_passphrase=pas)
         WSEndpoint2 = "wss://ws.okex.com:8443/ws/v5/"
         self.mds = WssMarketDataService(
@@ -99,6 +99,7 @@ class OptionBot(BaseStrategy):
         )
 
         # CONFIG
+        self.tg_token = tg_token
         self.strategy_orders = ["buy,btc-usd-231108-1880-c".upper()]
         self.place_order_type = PlaceOrderType.Mark
 
@@ -198,7 +199,7 @@ class OptionBot(BaseStrategy):
             print("cancel client option orders", oo)
 
     def _run_commander(self):
-        _thread = Thread(target=start_bot, args=())
+        _thread = Thread(target=start_bot, args=[self.tg_token])
         _thread.start()
 
     def run(self):
@@ -266,12 +267,10 @@ async def order_list(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     await update.message.reply_text(f'order {update.effective_user.first_name}')
 
 
-def start_bot():
+def start_bot(token):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
-        print("-----------------------start bot callback")
-        token = "1487299749:AAHwGvOysVg4bA3ltzccV68U7EmFJdLp7Mo"
         app = ApplicationBuilder().token(token).build()
         app.add_handler(CommandHandler("hello", hello))
         app.add_handler(CommandHandler("list", order_list))
