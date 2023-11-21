@@ -34,7 +34,7 @@ from utils.OkxEnum import AccountConfigMode, TdMode, InstType
 from utils.TdModeUtil import TdModeUtil
 
 WSEndpoint = "wss://ws.okx.com:8443/ws/v5/"
-WSEndpoint2 = "wss://ws.okex.com:8443/ws/v5/"
+WSEndpoint2 = "wss://wsaws.okx.com:8443/ws/v5/"#"wss://ws.okex.com:8443/ws/v5/"
 
 class BaseStrategy(ABC):
     trade_api: TradeAPI
@@ -399,11 +399,11 @@ class BaseStrategy(ABC):
     def _run_exchange_connection(self):
         self.mds.start()
         self.oms.start()
-        # self.pms.start()
+        self.pms.start()
         self.rest_mds.start()
         self.mds.run_service()
         self.oms.run_service()
-        # self.pms.run_service()
+        self.pms.run_service()
 
     def trading_instrument_type(self) -> InstType:
         guessed_inst_type = InstrumentUtil.get_inst_type_from_inst_id(TRADING_INSTRUMENT_ID)

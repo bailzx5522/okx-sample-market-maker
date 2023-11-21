@@ -108,7 +108,7 @@ class OptionBot(BaseStrategy):
         pass
 
     def ticker_cb(self, ticker: dict):
-        # logger.debug("new ticker")
+        logger.debug(f"new ticker {ticker}")
         pass
 
     def check_placed_orders(self):
@@ -187,7 +187,8 @@ class OptionBot(BaseStrategy):
         orders = self.trade_api.get_order_list()
         for o in orders['data']:
             oo = OptionOrder.init_from_json(o)
-            if oo.inst_type != InstType.OPTION or "ss" not in oo.client_order_id:
+            logger.debug(f"init open orders: {oo.client_order_id}, {oo.px}, {oo.side}, {oo.inst_id}")
+            if oo.inst_type != InstType.OPTION or "oo" not in oo.client_order_id:
                 continue
             inst_id = oo.inst_id
             cancel_req = CancelOrderRequest(inst_id=inst_id, client_order_id=oo.client_order_id)

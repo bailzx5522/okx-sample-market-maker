@@ -46,6 +46,7 @@ class WssMarketDataService(WsPublic):
             self.on_mark_price(message)
         else:
             print("------------ unknown sub market", message)
+
     def run_service(self):
         args = self._prepare_args()
         self.subscribe(args, self._callback)
@@ -159,7 +160,7 @@ class WssMarketDataService(WsPublic):
         tickers: Tickers = tickers_container[0]
         tickers.update_from_json(message)
         if self.ticker_cb:
-            self.ticker_cb()
+            self.ticker_cb(message['data'])
 
 def on_option_sum_update(message):
     """
